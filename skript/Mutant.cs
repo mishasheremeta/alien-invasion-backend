@@ -2,81 +2,108 @@ using Godot;
 
 public partial class Mutant : CharacterBody3D
 {
+	[Export]
+	public NodePath PlayerPath { get; set; }
+
 	private Node3D player = null;
 	private float hp = 15.0f;
-	private AnimationNodeStateMachinePlayback stateMachine;
 
 	private const float Speed = 4.0f;
 	private const float AttackRange = 2.0f;
 	private const float Damage = 2.0f;
 
-	[Export]
-	public NodePath PlayerPath { get; set; }
-
 	private NavigationAgent3D navAgent;
-	private AnimationTree animTree;
-	private CollisionShape3D collisionShape;
+	private AnimationPlayer animPlayer;
 
 	public override void _Ready()
 	{
-		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
-		animTree = GetNode<AnimationTree>("AnimationTree");
-		collisionShape = GetNode<CollisionShape3D>("CollisionShape3D");
+		navAgent = GetNodeOrNull<NavigationAgent3D>("NavigationAgent3D");
 
-		if (PlayerPath != null)
+		animPlayer = GetNodeOrNull<AnimationPlayer>("combo attack/Skeleton3D/AnimationPlayer");
+		if (animPlayer == null) animPlayer = GetNodeOrNull<AnimationPlayer>("AnimationPlayer");
+
+		if (animPlayer != null)
 		{
-			player = GetNode<Node3D>(PlayerPath);
+			SetupAnimation("run");
+			SetupAnimation("walking");
+			SetupAnimation("combo attack");
 		}
 
-		stateMachine = (AnimationNodeStateMachinePlayback)animTree.Get("parameters/playback");
+		if (PlayerPath != null && !PlayerPath.IsEmpty)
+		{
+			player = GetNodeOrNull<Node3D>(PlayerPath);
+		}
+
+		Callable.From(ActorSetup).CallDeferred();
+	}
+
+	private void SetupAnimation(string animName)
+	{
+		if (!animPlayer.HasAnimation(animName)) return;
+
+		var anim = animPlayer.GetAnimation(animName);
+		anim.LoopMode = Animation.LoopModeEnum.Linear;
+
+		// Принудительно отключаем дорожки перемещения кости Hips в коде
+		for (int i = 0; i < anim.GetTrackCount(); i++)
+		{
+			string trackPath = anim.TrackGetPath(i).ToString();
+			if (trackPath.Contains("Hips") && anim.TrackGetType(i) == Animation.TrackType.Position3D)
+			{
+				anim.TrackSetEnabled(i, false);
+			}
+		}
+	}
+
+	private async void ActorSetup()
+	{
+		await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+		if (player != null && navAgent != null)
+		{
+			navAgent.TargetPosition = player.GlobalPosition;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		if (player == null) return;
 
-		string currentNode = stateMachine.GetCurrentNode();
-
-		switch (currentNode)
-		{
-			case "walking":
-				animTree.Set("parameters/conditions/run", true);
-				break;
-
-			case "run":
-				Velocity = Vector3.Zero;
-				break;
-
-			case "shock":
-				animTree.Set("parameters/conditions/run", !TargetInRange());
-				SafeLookAt(player.GlobalPosition);
-				break;
-
-			case "death":
-				break;
-
-			case "combo attack":
-				break;
-		}
-
-		// Переміщення та слідування за гравцем
-		navAgent.TargetPosition = player.GlobalPosition;
-		Vector3 nextNavPoint = navAgent.GetNextPathPosition();
-
-		Velocity = (nextNavPoint - GlobalPosition).Normalized() * Speed;
 		SafeLookAt(player.GlobalPosition);
 
-		animTree.Set("parameters/conditions/shock", TargetInRange());
+		if (TargetInRange())
+		{
+			Velocity = Vector3.Zero;
+
+			if (animPlayer != null && (!animPlayer.IsPlaying() || animPlayer.CurrentAnimation != "combo attack"))
+			{
+				animPlayer.Play("combo attack");
+			}
+		}
+		else
+		{
+			if (animPlayer != null && (!animPlayer.IsPlaying() || animPlayer.CurrentAnimation != "run"))
+			{
+				animPlayer.Play("run");
+			}
+
+			if (navAgent != null)
+			{
+				navAgent.TargetPosition = player.GlobalPosition;
+				Vector3 nextNavPoint = navAgent.GetNextPathPosition();
+				Vector3 direction = (nextNavPoint - GlobalPosition).Normalized();
+				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
+			}
+		}
 
 		MoveAndSlide();
 	}
 
 	public void ComboAttackPlayer()
 	{
-		if (TargetInRange())
+		if (TargetInRange() && player != null)
 		{
 			Vector3 dir = GlobalPosition.DirectionTo(player.GlobalPosition);
-			player.Call("comboattack", Damage, dir); 
+			player.Call("comboattack", Damage, dir);
 		}
 	}
 
@@ -86,13 +113,13 @@ public partial class Mutant : CharacterBody3D
 		return GlobalPosition.DistanceTo(player.GlobalPosition) <= AttackRange;
 	}
 
-	// Безпечний поворот, щоб уникнути помилки LookAt (коли позиція ворога і гравця збігаються)
 	private void SafeLookAt(Vector3 targetPosition)
 	{
 		Vector3 lookTarget = new Vector3(targetPosition.X, GlobalPosition.Y, targetPosition.Z);
 		if (!GlobalPosition.IsEqualApprox(lookTarget))
 		{
 			LookAt(lookTarget, Vector3.Up);
+			RotateY(Mathf.Pi);
 		}
 	}
 }
