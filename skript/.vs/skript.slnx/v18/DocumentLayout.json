@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "E:\\godot c#\\alien invasion\\skript\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\godot c#\\alien invasion\\skript\\Shotgun.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Shotgun.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\godot c#\\alien invasion\\skript\\Mutant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Mutant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -27,19 +31,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Shotgun.cs",
+              "DocumentMoniker": "E:\\godot c#\\alien invasion\\skript\\Shotgun.cs",
+              "RelativeDocumentMoniker": "Shotgun.cs",
+              "ToolTip": "E:\\godot c#\\alien invasion\\skript\\Shotgun.cs",
+              "RelativeToolTip": "Shotgun.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAAAEYAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-20T15:57:00.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Mutant.cs",
               "DocumentMoniker": "E:\\godot c#\\alien invasion\\skript\\Mutant.cs",
               "RelativeDocumentMoniker": "Mutant.cs",
               "ToolTip": "E:\\godot c#\\alien invasion\\skript\\Mutant.cs",
               "RelativeToolTip": "Mutant.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFsAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAADEAAAAAAAAAAAAAAC8AAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-11T17:29:49.697Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Player.cs",
               "DocumentMoniker": "E:\\godot c#\\alien invasion\\skript\\Player.cs",
               "RelativeDocumentMoniker": "Player.cs",

@@ -36,6 +36,18 @@ public partial class Mutant : CharacterBody3D
 
 		Callable.From(ActorSetup).CallDeferred();
 	}
+	public void TakeDamage(float amount)
+	{
+		hp -= amount;
+
+		GD.Print($"Мутант отримав {amount} шкоди. HP: {hp}");
+
+		if (hp <= 0.0f)
+		{
+			GD.Print("Мутанта знищено!");
+			QueueFree();
+		}
+	}
 
 	private void SetupAnimation(string animName)
 	{

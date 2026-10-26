@@ -2423,11 +2423,10 @@ states/walking/position = Vector2(386.8, 149.6)
 transitions = ["Start", "walking", SubResource("AnimationNodeStateMachineTransition_o31xk"), "walking", "run", SubResource("AnimationNodeStateMachineTransition_icjgd"), "run", "shock", SubResource("AnimationNodeStateMachineTransition_63t3l"), "walking", "death", SubResource("AnimationNodeStateMachineTransition_clwvx"), "run", "death", SubResource("AnimationNodeStateMachineTransition_fgjdp"), "shock", "death", SubResource("AnimationNodeStateMachineTransition_e2u2g"), "run", "combo attack", SubResource("AnimationNodeStateMachineTransition_3b5tf"), "combo attack", "run", SubResource("AnimationNodeStateMachineTransition_u74f1"), "shock", "run", SubResource("AnimationNodeStateMachineTransition_vavxy")]
 
 [node name="mutant" type="CharacterBody3D" unique_id=1816213977]
-transform = Transform3D(-0.99287695, 0, -0.11914468, 0, 1, 0, 0.11914468, 0, -0.99287695, 0, 0, 2.6684544)
 script = ExtResource("1_cyrcq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1394762497]
-transform = Transform3D(0.9997196, 0, 0.023678008, 0, 1, 0, -0.023678008, 0, 0.9997196, 0.010561295, 0.87139773, 2.2405064)
+transform = Transform3D(0.99971956, 0, 0.023678008, 0, 1, 0, -0.023678008, 0, 0.99971956, 0.010561295, 0.87139773, 1.9129615)
 shape = SubResource("CapsuleShape3D_mj2ab")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1930876231]

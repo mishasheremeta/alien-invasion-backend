@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://b6emm8pyt7xac" path="res://skript/Player.cs" id="1_f3sb7"]
 [ext_resource type="Texture2D" uid="uid://bflmsentpcm0o" path="res://texture/photo_2026-09-06_16-46-35.jpg" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://cpng81ste871t" path="res://mutant.tscn" id="1_tlwt5"]
+[ext_resource type="Script" uid="uid://c6u0oqetnj1li" path="res://skript/Shotgun.cs" id="4_036b0"]
+[ext_resource type="PackedScene" uid="uid://c217qfwlmwkug" path="res://models/ShotgunModel/shotgun.glb" id="5_dwbse"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -43,11 +45,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 navigation_mesh = SubResource("NavigationMesh_oexxs")
 
 [node name="mutant" parent="NavigationRegion3D" unique_id=1816213977 instance=ExtResource("1_tlwt5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.729691, -3.5662966, 0)
+transform = Transform3D(0.99999887, 0.0010957565, -0.001051672, -0.0010949697, 0.9999991, 0.0007505245, 0.0010524913, -0.00074937544, 0.99999917, 8.729691, -3.762169, 0)
+PlayerPath = NodePath("../CSGBox3D/player")
+
+[node name="mutant3" parent="NavigationRegion3D" unique_id=613180556 instance=ExtResource("1_tlwt5")]
+transform = Transform3D(0.99999887, 0.0010957565, -0.001051672, -0.0010949697, 0.9999991, 0.0007505245, 0.0010524913, -0.00074937544, 0.99999917, 8.729691, -3.762169, -4.1978674)
 PlayerPath = NodePath("../CSGBox3D/player")
 
 [node name="mutant2" parent="NavigationRegion3D" unique_id=581568197 instance=ExtResource("1_tlwt5")]
-transform = Transform3D(0.98229975, 0, -0.18731578, 0, 1, 0, 0.18731578, 0, 0.98229975, 0, -3.4263468, 0)
+transform = Transform3D(0.98229975, 0, -0.18731578, 0, 1, 0, 0.18731578, 0, 0.98229975, 0, -3.7501578, 0)
 PlayerPath = NodePath("../CSGBox3D/player")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D" unique_id=1444269389]
@@ -66,8 +72,18 @@ mesh = SubResource("CapsuleMesh_x16qb")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/CSGBox3D/player" unique_id=780762247]
 shape = SubResource("ConvexPolygonShape3D_gv5m4")
 
+[node name="WeaponHolder" type="Node3D" parent="NavigationRegion3D/CSGBox3D/player" unique_id=175092714]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59831476, 0)
+script = ExtResource("4_036b0")
+CameraPath = NodePath("../Camera3D")
+
+[node name="ShotgunModel" type="Node3D" parent="NavigationRegion3D/CSGBox3D/player/WeaponHolder" unique_id=792530634]
+
+[node name="shotgun" parent="NavigationRegion3D/CSGBox3D/player/WeaponHolder/ShotgunModel" unique_id=1244192705 instance=ExtResource("5_dwbse")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5559063)
+
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/CSGBox3D/player" unique_id=576751225]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58985305, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53755474, 0.025920868)
 
 [node name="стіни" type="Node3D" parent="NavigationRegion3D" unique_id=1179323326]
 transform = Transform3D(0.9999933, 0, -0.0036519123, 0, 1, 0, 0.0036519123, 0, 0.9999933, 17.781036, -2.4303493, 12.383427)

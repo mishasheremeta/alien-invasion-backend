@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ckqk411w445y6"]
+
+[ext_resource type="PackedScene" uid="uid://ckepou2b0yhru" path="res://world/Untitled.fbx" id="1_thy1d"]
+
+[node name="Untitled" unique_id=1041823819 instance=ExtResource("1_thy1d")]
+
+[node name="Light" parent="." index="3" unique_id=1792889044]
+light_color = Color(1, 1, 0.78431374, 1)
+light_energy = 1000.69
