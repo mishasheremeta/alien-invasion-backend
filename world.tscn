@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bflmsentpcm0o" path="res://texture/photo_2026-09-06_16-46-35.jpg" id="1_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://cpng81ste871t" path="res://mutant.tscn" id="1_tlwt5"]
 [ext_resource type="Script" uid="uid://c6u0oqetnj1li" path="res://skript/Shotgun.cs" id="4_036b0"]
-[ext_resource type="PackedScene" uid="uid://c217qfwlmwkug" path="res://models/ShotgunModel/shotgun.glb" id="5_dwbse"]
+[ext_resource type="PackedScene" uid="uid://sc2a8lpjy0p6" path="res://shotgun_2.tscn" id="5_036b0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fj7yv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -79,8 +79,8 @@ CameraPath = NodePath("../Camera3D")
 
 [node name="ShotgunModel" type="Node3D" parent="NavigationRegion3D/CSGBox3D/player/WeaponHolder" unique_id=792530634]
 
-[node name="shotgun" parent="NavigationRegion3D/CSGBox3D/player/WeaponHolder/ShotgunModel" unique_id=1244192705 instance=ExtResource("5_dwbse")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5559063)
+[node name="shotgun2" parent="NavigationRegion3D/CSGBox3D/player/WeaponHolder/ShotgunModel" unique_id=434159528 instance=ExtResource("5_036b0")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.13622093, 0.15291023)
 
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/CSGBox3D/player" unique_id=576751225]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53755474, 0.025920868)

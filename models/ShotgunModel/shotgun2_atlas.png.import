@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5phvpk7a8sqf"
-path.s3tc="res://.godot/imported/shotgun_atlas.png-ac1f86a2c56b1d2b5b6d891caf7e7abe.s3tc.ctex"
+uid="uid://bulw4k23l20ln"
+path.s3tc="res://.godot/imported/shotgun2_atlas.png-cdbd73c14fb0344c512f1d9d87b1c7de.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://models/ShotgunModel/shotgun_atlas.png"
-dest_files=["res://.godot/imported/shotgun_atlas.png-ac1f86a2c56b1d2b5b6d891caf7e7abe.s3tc.ctex"]
+source_file="res://models/ShotgunModel/shotgun2_atlas.png"
+dest_files=["res://.godot/imported/shotgun2_atlas.png-cdbd73c14fb0344c512f1d9d87b1c7de.s3tc.ctex"]
 
 [params]
 
