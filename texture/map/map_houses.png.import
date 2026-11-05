@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eaiauqe00407"
-path.s3tc="res://.godot/imported/photo_2026-09-06_17-11-14.jpg-c99b1cc96273b783b1a07b6078be30f5.s3tc.ctex"
+uid="uid://b2nrg80mkhdii"
+path.s3tc="res://.godot/imported/map_houses.png-b70c87535d30b24f21957d261a5450e2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "163f4227a303fc3d8fe14b81976fe629"
+}
 
 [deps]
 
-source_file="res://texture/photo_2026-09-06_17-11-14.jpg"
-dest_files=["res://.godot/imported/photo_2026-09-06_17-11-14.jpg-c99b1cc96273b783b1a07b6078be30f5.s3tc.ctex"]
+source_file="res://texture/map/map_houses.png"
+dest_files=["res://.godot/imported/map_houses.png-b70c87535d30b24f21957d261a5450e2.s3tc.ctex"]
 
 [params]
 

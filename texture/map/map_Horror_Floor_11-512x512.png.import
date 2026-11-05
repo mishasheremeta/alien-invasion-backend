@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0s82i6adqtp1"
-path.s3tc="res://.godot/imported/mutant_Mutant_diffuse.png-65db52c377b8181b72b35a8da8a48739.s3tc.ctex"
+uid="uid://di33il323obbs"
+path.s3tc="res://.godot/imported/map_Horror_Floor_11-512x512.png-450a2eba9cdb455fd37b91c529d0fce5.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "9dbc72eb7e675abb513d5042bec77ed9"
+"md5": "79d3e3bb2de8c217701c4c83b40ebb2c"
 }
 
 [deps]
 
-source_file="res://models/mutant/mutant_Mutant_diffuse.png"
-dest_files=["res://.godot/imported/mutant_Mutant_diffuse.png-65db52c377b8181b72b35a8da8a48739.s3tc.ctex"]
+source_file="res://texture/map/map_Horror_Floor_11-512x512.png"
+dest_files=["res://.godot/imported/map_Horror_Floor_11-512x512.png-450a2eba9cdb455fd37b91c529d0fce5.s3tc.ctex"]
 
 [params]
 

@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhdaxndjkdjog"
-path.s3tc="res://.godot/imported/photo_2026-09-06_16-25-36.jpg-7d4a4d1053c3373ec9d0d02ca0a14da3.s3tc.ctex"
+uid="uid://d2paply0skk81"
+path.s3tc="res://.godot/imported/mutant_Mutant_normal.png-60a2b9b38c8817a3fd5c81f34b92fe6f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "78924e6f795bf88a46f6a4aa72408b52"
+}
 
 [deps]
 
-source_file="res://texture/photo_2026-09-06_16-25-36.jpg"
-dest_files=["res://.godot/imported/photo_2026-09-06_16-25-36.jpg-7d4a4d1053c3373ec9d0d02ca0a14da3.s3tc.ctex"]
+source_file="res://texture/Mutant/mutant_Mutant_normal.png"
+dest_files=["res://.godot/imported/mutant_Mutant_normal.png-60a2b9b38c8817a3fd5c81f34b92fe6f.s3tc.ctex"]
 
 [params]
 
@@ -22,7 +25,7 @@ compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

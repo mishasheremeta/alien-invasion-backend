@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://di33il323obbs"
-path.s3tc="res://.godot/imported/map_Horror_Floor_11-512x512.png-0d10f3bb2bac36bb8a54df7f0f51c208.s3tc.ctex"
+uid="uid://bulw4k23l20ln"
+path.s3tc="res://.godot/imported/shotgun2_atlas.png-92b4a7159f7a0e10b31abddebc26d17b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "79d3e3bb2de8c217701c4c83b40ebb2c"
+"md5": "bb8a427cdc2db41f35b789b6ee54500b"
 }
 
 [deps]
 
-source_file="res://world/map_Horror_Floor_11-512x512.png"
-dest_files=["res://.godot/imported/map_Horror_Floor_11-512x512.png-0d10f3bb2bac36bb8a54df7f0f51c208.s3tc.ctex"]
+source_file="res://texture/shutgun/shotgun2_atlas.png"
+dest_files=["res://.godot/imported/shotgun2_atlas.png-92b4a7159f7a0e10b31abddebc26d17b.s3tc.ctex"]
 
 [params]
 

@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c48iklgncuwuk"
-path.s3tc="res://.godot/imported/map_Horror_Metal_06-512x512.png-9d0be29650d657e9ecd295c566a125e0.s3tc.ctex"
+uid="uid://b33lwpgvcg61u"
+path.s3tc="res://.godot/imported/map_Horror_Metal_07-512x512.png-a7221a83be3c14830a926b4298b27b6f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "9dcd7d31bfa8fc08e442581e55cc4509"
+"md5": "825c76791ef80e510b64e50e3491c45c"
 }
 
 [deps]
 
-source_file="res://world/map_Horror_Metal_06-512x512.png"
-dest_files=["res://.godot/imported/map_Horror_Metal_06-512x512.png-9d0be29650d657e9ecd295c566a125e0.s3tc.ctex"]
+source_file="res://texture/map/map_Horror_Metal_07-512x512.png"
+dest_files=["res://.godot/imported/map_Horror_Metal_07-512x512.png-a7221a83be3c14830a926b4298b27b6f.s3tc.ctex"]
 
 [params]
 
