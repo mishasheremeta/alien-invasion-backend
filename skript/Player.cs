@@ -1,5 +1,10 @@
 using Godot;
 
+
+
+
+
+
 public partial class Player : CharacterBody3D
 {
 	// Налаштування швидкості руху та стрибка
@@ -7,12 +12,15 @@ public partial class Player : CharacterBody3D
 	public const float SprintSpeed = 9.0f;
 	public const float JumpVelocity = 4.5f;
 	[ExportGroup("Head Bobbing")]
-	[Export] public float BobFrequency = 2.4f;        // Частота кроків (швидкість коливань)
-	[Export] public float BobAmplitude = 0.08f;       // Висота та ширина амплітуди
-	[Export] public float BobSprintMultiplier = 1.4f; // Наскільки сильніше погойдування при бігу
+	[Export] public float BobFrequency = 1.8f;        // Частота кроків (швидкість коливань)
+	[Export] public float BobAmplitude = 0.05f;       // Висота та ширина амплітуди
+	[Export] public float BobSprintMultiplier = 0.8f; // Наскільки сильніше погойдування при бігу
 
 	private Vector3 _baseCamPos; // Зберігає початкову позицію камери в сцені
 	private float _bobTimer = 0.0f; // Лічильник для розрахунку хвилі (синусоїди)
+	
+	
+
 
 
 	// Параметри плавності проковзування та чутливості миші (доступні в Інспекторі)
@@ -63,6 +71,7 @@ public partial class Player : CharacterBody3D
 		input = input.Normalized();
 
 		Vector3 dir = (Transform.Basis * new Vector3(input.X, 0, input.Y)).Normalized();
+
 
 		// 2. Створюємо змінну isSprinting
 		bool isSprinting = Input.IsKeyPressed(Key.Shift);
