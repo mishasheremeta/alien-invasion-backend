@@ -4,10 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://cpng81ste871t" path="res://models/mutant/mutant.tscn" id="1_swwi1"]
 [ext_resource type="Script" uid="uid://b6emm8pyt7xac" path="res://skript/Player.cs" id="2_aoj3l"]
 [ext_resource type="Texture2D" uid="uid://bu2muxtae6t7h" path="res://texture/map/map_Horror_Floor_11-512x512_1.png" id="2_teowk"]
+[ext_resource type="AudioStream" uid="uid://cwgiynthhbp4a" path="res://sounds/прижок.wav" id="3_4wr1n"]
 [ext_resource type="AudioStream" uid="uid://2oaiqvjwbt7h" path="res://sounds/ходьба.wav" id="3_aoj3l"]
 [ext_resource type="Texture2D" uid="uid://b2nrg80mkhdii" path="res://texture/map/map_houses.png" id="3_epef7"]
 [ext_resource type="Script" uid="uid://c6u0oqetnj1li" path="res://skript/Shotgun.cs" id="3_teowk"]
 [ext_resource type="Texture2D" uid="uid://c48iklgncuwuk" path="res://texture/map/map_Horror_Metal_06-512x512.png" id="4_4wr1n"]
+[ext_resource type="AudioStream" uid="uid://cbrl3ik6juqcu" path="res://sounds/біг.wav" id="4_28vak"]
 [ext_resource type="PackedScene" uid="uid://sc2a8lpjy0p6" path="res://models/ShotgunModel/shotgun_2.tscn" id="4_epef7"]
 [ext_resource type="Texture2D" uid="uid://cpu03tao7y4o2" path="res://texture/map/map_Horror_Metal_08-512x512.png" id="5_28vak"]
 [ext_resource type="Texture2D" uid="uid://b33lwpgvcg61u" path="res://texture/map/map_Horror_Metal_07-512x512.png" id="6_4pkq1"]
@@ -7685,6 +7687,14 @@ script = ExtResource("2_aoj3l")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/player" unique_id=634243918]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.0993943, 0)
 mesh = SubResource("CapsuleMesh_0yejx")
+
+[node name="jump" type="AudioStreamPlayer3D" parent="NavigationRegion3D/player" unique_id=849596174]
+stream = ExtResource("3_4wr1n")
+volume_db = -15.0
+
+[node name="run" type="AudioStreamPlayer3D" parent="NavigationRegion3D/player" unique_id=1100507770]
+stream = ExtResource("4_28vak")
+volume_db = -15.0
 
 [node name="move" type="AudioStreamPlayer3D" parent="NavigationRegion3D/player" unique_id=535379158]
 stream = ExtResource("3_aoj3l")
