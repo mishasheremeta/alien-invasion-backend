@@ -28,13 +28,13 @@ public partial class Player : CharacterBody3D
 	// ==========================================
 	// АУДІОПЛЕЄРИ ТА ФАЙЛИ ЗВУКІВ
 	// ==========================================
-	private AudioStreamPlayer _jumpPlayer;
-	private AudioStreamPlayer _runPlayer;
-	private AudioStreamPlayer _movePlayer;
+	private AudioStreamPlayer3D _jumpPlayer;
+	private AudioStreamPlayer3D _runPlayer;
+	private AudioStreamPlayer3D _movePlayer;
 
-	private readonly AudioStream _walkSound = GD.Load<AudioStream>("res://ходьба.wav");
-	private readonly AudioStream _sprintSound = GD.Load<AudioStream>("res://біг.wav");
-	private readonly AudioStream _jumpSound = GD.Load<AudioStream>("res://прижок.wav");
+	private AudioStream _walkSound;
+	private AudioStream _sprintSound;
+	private AudioStream _jumpSound;
 
 	public override void _Ready()
 	{
@@ -43,9 +43,20 @@ public partial class Player : CharacterBody3D
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
-		_jumpPlayer = GetNodeOrNull<AudioStreamPlayer>("jump");
-		_runPlayer = GetNodeOrNull<AudioStreamPlayer>("run");
-		_movePlayer = GetNodeOrNull<AudioStreamPlayer>("move");
+		_jumpPlayer = GetNodeOrNull<AudioStreamPlayer3D>("jump");
+		_runPlayer = GetNodeOrNull<AudioStreamPlayer3D>("run");
+		_movePlayer = GetNodeOrNull<AudioStreamPlayer3D>("move");
+
+		_walkSound = GD.Load<AudioStream>("res://sounds/walk.wav");
+		_sprintSound = GD.Load<AudioStream>("res://sounds/sprint.wav");
+		_jumpSound = GD.Load<AudioStream>("res://sounds/jump.wav");
+
+		if (_jumpPlayer == null) GD.PrintErr("Вузол 'jump' не знайдено");
+		if (_runPlayer == null) GD.PrintErr("Вузол 'run' не знайдено");
+		if (_movePlayer == null) GD.PrintErr("Вузол 'move' не знайдено");
+		if (_walkSound == null) GD.PrintErr("walk.wav не завантажено");
+		if (_sprintSound == null) GD.PrintErr("sprint.wav не завантажено");
+		if (_jumpSound == null) GD.PrintErr("jump.wav не завантажено");
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -117,39 +128,45 @@ public partial class Player : CharacterBody3D
 		else
 		{
 			_bobTimer = 0.0f;
+			_nextFootstepDistance = 0.0f;
 			_camera.Position = _camera.Position.Lerp(_baseCamPos, delta * 10.0f);
+
+			// Зупинились або в повітрі: глушимо обидва звуки
+			StopPlayer(_runPlayer);
+			StopPlayer(_movePlayer);
 		}
 	}
 
 	private void CheckFootstepSound(bool isSprinting)
 	{
+		// Глушимо звук, який не відповідає поточному режиму
+		if (isSprinting)
+			StopPlayer(_movePlayer);
+		else
+			StopPlayer(_runPlayer);
+
 		if (_bobTimer >= _nextFootstepDistance)
 		{
-			if (isSprinting)
-			{
-				if (_runPlayer != null)
-				{
-					if (_runPlayer.Stream == null && _sprintSound != null)
-						_runPlayer.Stream = _sprintSound;
+			AudioStreamPlayer3D player = isSprinting ? _runPlayer : _movePlayer;
+			AudioStream sound = isSprinting ? _sprintSound : _walkSound;
 
-					if (!_runPlayer.Playing)
-						_runPlayer.Play();
-				}
-			}
-			else
+			if (player != null)
 			{
-				if (_movePlayer != null)
-				{
-					if (_movePlayer.Stream == null && _walkSound != null)
-						_movePlayer.Stream = _walkSound;
+				if (player.Stream == null && sound != null)
+					player.Stream = sound;
 
-					if (!_movePlayer.Playing)
-						_movePlayer.Play();
-				}
+				if (!player.Playing)
+					player.Play();
 			}
 
 			_nextFootstepDistance = _bobTimer + Mathf.Pi;
 		}
+	}
+
+	private static void StopPlayer(AudioStreamPlayer3D player)
+	{
+		if (player != null && player.Playing)
+			player.Stop();
 	}
 
 	private void PlayJumpSound()
