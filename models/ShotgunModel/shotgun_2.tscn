@@ -3,3 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://cotnlfc5p043l" path="res://models/ShotgunModel/shotgun2.glb" id="1_1m0gy"]
 
 [node name="shotgun2" unique_id=434159528 instance=ExtResource("1_1m0gy")]
+
+[node name="fp_pump_shotgun_bolt" parent="fp_pump_shotgun/fp_pump_shotgun_hand_r/fp_pump_shotgun_held" parent_id_path=PackedInt32Array(1257153491) index="0" unique_id=234659064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.01749999, 0.033999994, 0.17399997)

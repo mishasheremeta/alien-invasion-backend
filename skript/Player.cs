@@ -47,9 +47,9 @@ public partial class Player : CharacterBody3D
 		_runPlayer = GetNodeOrNull<AudioStreamPlayer3D>("run");
 		_movePlayer = GetNodeOrNull<AudioStreamPlayer3D>("move");
 
-		_walkSound = GD.Load<AudioStream>("res://sounds/walk.wav");
-		_sprintSound = GD.Load<AudioStream>("res://sounds/sprint.wav");
-		_jumpSound = GD.Load<AudioStream>("res://sounds/jump.wav");
+		_walkSound = GD.Load<AudioStream>("res://sounds/ходьба.wav");
+		_sprintSound = GD.Load<AudioStream>("res://sounds/біг.wav");
+		_jumpSound = GD.Load<AudioStream>("res://sounds/прижок.wav");
 
 		if (_jumpPlayer == null) GD.PrintErr("Вузол 'jump' не знайдено");
 		if (_runPlayer == null) GD.PrintErr("Вузол 'run' не знайдено");

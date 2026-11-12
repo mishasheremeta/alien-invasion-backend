@@ -7704,18 +7704,18 @@ volume_db = -15.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.039684, 0)
 shape = SubResource("ConvexPolygonShape3D_5twwe")
 
-[node name="WeaponHolder" type="Node3D" parent="NavigationRegion3D/player" unique_id=1854513795]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59831476, 0)
-script = ExtResource("3_teowk")
-CameraPath = NodePath("../Camera3D")
-
-[node name="ShotgunModel" type="Node3D" parent="NavigationRegion3D/player/WeaponHolder" unique_id=2079858466]
-
-[node name="shotgun2" parent="NavigationRegion3D/player/WeaponHolder/ShotgunModel" unique_id=434159528 instance=ExtResource("4_epef7")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -4.0216637, 0.089170456)
-
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/player" unique_id=2038637748]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.2498467, 0.025920868)
+
+[node name="WeaponHolder" type="Node3D" parent="NavigationRegion3D/player/Camera3D" unique_id=1854513795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8481615, -0.025920868)
+script = ExtResource("3_teowk")
+WeaponScene = ExtResource("4_epef7")
+
+[node name="ShotgunModel" type="Node3D" parent="NavigationRegion3D/player/Camera3D/WeaponHolder" unique_id=2079858466]
+
+[node name="shotgun2" parent="NavigationRegion3D/player/Camera3D/WeaponHolder/ShotgunModel" unique_id=434159528 instance=ExtResource("4_epef7")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -4.0216637, 0.089170456)
 
 [node name="Elements map" type="Node3D" parent="NavigationRegion3D" unique_id=1933685663]
 
