@@ -41,43 +41,10 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "nodes": {
-"PATH:Cube_001": {
+"PATH:Cube": {
 "generate/physics": true
 },
 "PATH:Cube_002": {
-"generate/physics": true
-},
-"PATH:Cube_003": {
-"generate/physics": true
-},
-"PATH:Cube_004": {
-"generate/physics": true
-},
-"PATH:Cube_005": {
-"generate/physics": true
-},
-"PATH:Cube_006": {
-"generate/physics": true
-},
-"PATH:Cube_007": {
-"generate/physics": true
-},
-"PATH:Cube_008": {
-"generate/physics": true
-},
-"PATH:Cube_009": {
-"generate/physics": true
-},
-"PATH:Cube_010": {
-"generate/physics": true
-},
-"PATH:Cube_011": {
-"generate/physics": true
-},
-"PATH:Cube_012": {
-"generate/physics": true
-},
-"PATH:Cube_015": {
 "generate/physics": true
 },
 "PATH:Hangar1": {

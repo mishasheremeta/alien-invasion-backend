@@ -2,15 +2,28 @@ using Godot;
 
 public partial class Mutant : CharacterBody3D
 {
-	[Export]
-	public NodePath PlayerPath { get; set; }
+	[Export] public NodePath PlayerPath { get; set; }
+	[Export] public float AttackRange { get; set; } = 1.5f;
+	[Export] public float Damage { get; set; } = 10.0f;
+	[Export] public float AttackCooldown { get; set; } = 0.8f;   // пауза між ударами
+	[Export(PropertyHint.Range, "0,1,0.05")]
+	public float HitMoment { get; set; } = 0.45f;                // у який момент анімації шкода (0..1)
+	[Export] public float AttackAnimSpeed { get; set; } = 1.0f;
 
-	private Node3D player = null;
-	private float hp = 15.0f;
+	private const string AttackAnim = "combo attack";
+	private const string RunAnim = "run";
+	private const string IdleAnim = "idle"; // якщо такої немає, мутант просто завмре
+
+	private Player player = null;
+	public float hp = 15.0f;
 
 	private const float Speed = 4.0f;
-	private const float AttackRange = 2.0f;
-	private const float Damage = 2.0f;
+
+	private float cooldownTimer = 0.0f;
+	private bool isAttacking = false;
+	private bool hitDone = false;
+	private float attackElapsed = 0.0f;
+	private float attackLength = 1.0f;
 
 	private NavigationAgent3D navAgent;
 	private AnimationPlayer animPlayer;
@@ -19,27 +32,49 @@ public partial class Mutant : CharacterBody3D
 	{
 		navAgent = GetNodeOrNull<NavigationAgent3D>("NavigationAgent3D");
 
-		animPlayer = GetNodeOrNull<AnimationPlayer>("combo attack/Skeleton3D/AnimationPlayer");
-		if (animPlayer == null) animPlayer = GetNodeOrNull<AnimationPlayer>("AnimationPlayer");
+		animPlayer = GetNodeOrNull<AnimationPlayer>("AnimationPlayer");
+		if (animPlayer == null)
+			animPlayer = GetNodeOrNull<AnimationPlayer>("combo attack/Skeleton3D/AnimationPlayer");
+
+		// AnimationTree не повинен перебивати AnimationPlayer
+		var tree = GetNodeOrNull<AnimationTree>("AnimationTree");
+		if (tree != null)
+			tree.Active = false;
 
 		if (animPlayer != null)
 		{
-			SetupAnimation("run");
-			SetupAnimation("walking");
-			SetupAnimation("combo attack");
-		}
+			SetupAnimation(RunAnim, true);
+			SetupAnimation("walking", true);
+			SetupAnimation(IdleAnim, true);
+			SetupAnimation(AttackAnim, false); // удар НЕ зациклений
 
-		if (PlayerPath != null && !PlayerPath.IsEmpty)
+			if (animPlayer.HasAnimation(AttackAnim))
+				attackLength = (float)animPlayer.GetAnimation(AttackAnim).Length / AttackAnimSpeed;
+			else
+				GD.PrintErr($"Анімацію '{AttackAnim}' не знайдено. Є: ",
+					string.Join(", ", animPlayer.GetAnimationList()));
+		}
+		else
 		{
-			player = GetNodeOrNull<Node3D>(PlayerPath);
+			GD.PrintErr("Мутант: AnimationPlayer не знайдено!");
 		}
 
+		FindPlayer();
 		Callable.From(ActorSetup).CallDeferred();
 	}
+
+	private void FindPlayer()
+	{
+		if (PlayerPath != null && !PlayerPath.IsEmpty)
+			player = GetNodeOrNull<Player>(PlayerPath);
+
+		if (player == null)
+			player = GetTree().GetFirstNodeInGroup("player") as Player;
+	}
+
 	public void TakeDamage(float amount)
 	{
 		hp -= amount;
-
 		GD.Print($"Мутант отримав {amount} шкоди. HP: {hp}");
 
 		if (hp <= 0.0f)
@@ -49,18 +84,22 @@ public partial class Mutant : CharacterBody3D
 		}
 	}
 
-	private void SetupAnimation(string animName)
+	private void SetupAnimation(string animName, bool loop)
 	{
-		if (!animPlayer.HasAnimation(animName)) return;
+		if (animPlayer == null || !animPlayer.HasAnimation(animName))
+			return;
 
 		var anim = animPlayer.GetAnimation(animName);
-		anim.LoopMode = Animation.LoopModeEnum.Linear;
+		anim.LoopMode = loop
+			? Animation.LoopModeEnum.Linear
+			: Animation.LoopModeEnum.None;
 
-		// Принудительно отключаем дорожки перемещения кости Hips в коде
 		for (int i = 0; i < anim.GetTrackCount(); i++)
 		{
 			string trackPath = anim.TrackGetPath(i).ToString();
-			if (trackPath.Contains("Hips") && anim.TrackGetType(i) == Animation.TrackType.Position3D)
+
+			if (trackPath.Contains("Hips") &&
+				anim.TrackGetType(i) == Animation.TrackType.Position3D)
 			{
 				anim.TrackSetEnabled(i, false);
 			}
@@ -70,64 +109,156 @@ public partial class Mutant : CharacterBody3D
 	private async void ActorSetup()
 	{
 		await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
+
 		if (player != null && navAgent != null)
 		{
+			navAgent.TargetDesiredDistance = 0.5f;
 			navAgent.TargetPosition = player.GlobalPosition;
 		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (player == null) return;
+		if (player == null || !GodotObject.IsInstanceValid(player))
+		{
+			FindPlayer();
+			if (player == null) return;
+		}
 
+		float fDelta = (float)delta;
+		Vector3 vel = Velocity;
+
+		if (!IsOnFloor())
+			vel += GetGravity() * fDelta;
+
+		// Гравець мертвий: зупиняємось
+		if (player.IsDead)
+		{
+			isAttacking = false;
+			vel.X = 0;
+			vel.Z = 0;
+			Velocity = vel;
+			PlayLoop(IdleAnim);
+			MoveAndSlide();
+			return;
+		}
+
+		cooldownTimer -= fDelta;
 		SafeLookAt(player.GlobalPosition);
 
-		if (TargetInRange())
-		{
-			Velocity = Vector3.Zero;
+		bool inRange = TargetInRange(AttackRange);
 
-			if (animPlayer != null && (!animPlayer.IsPlaying() || animPlayer.CurrentAnimation != "combo attack"))
-			{
-				animPlayer.Play("combo attack");
-			}
+		if (isAttacking || inRange)
+		{
+			// Під час атаки стоїмо на місці
+			vel.X = 0;
+			vel.Z = 0;
+
+			if (!isAttacking && cooldownTimer <= 0.0f)
+				StartAttack();
+
+			if (isAttacking)
+				UpdateAttack(fDelta);
+			else
+				PlayLoop(IdleAnim); // чекаємо кулдаун
 		}
 		else
 		{
-			if (animPlayer != null && (!animPlayer.IsPlaying() || animPlayer.CurrentAnimation != "run"))
-			{
-				animPlayer.Play("run");
-			}
+			PlayLoop(RunAnim);
+
+			Vector3 targetPoint = player.GlobalPosition;
 
 			if (navAgent != null)
 			{
 				navAgent.TargetPosition = player.GlobalPosition;
-				Vector3 nextNavPoint = navAgent.GetNextPathPosition();
-				Vector3 direction = (nextNavPoint - GlobalPosition).Normalized();
-				Velocity = new Vector3(direction.X * Speed, Velocity.Y, direction.Z * Speed);
+
+				if (!navAgent.IsNavigationFinished())
+					targetPoint = navAgent.GetNextPathPosition();
 			}
+
+			Vector3 direction = targetPoint - GlobalPosition;
+			direction.Y = 0;
+			direction = direction.Normalized();
+
+			vel.X = direction.X * Speed;
+			vel.Z = direction.Z * Speed;
 		}
 
+		Velocity = vel;
 		MoveAndSlide();
 	}
 
-	public void ComboAttackPlayer()
+	// ==========================================
+	// АТАКА
+	// ==========================================
+	private void StartAttack()
 	{
-		if (TargetInRange() && player != null)
+		isAttacking = true;
+		hitDone = false;
+		attackElapsed = 0.0f;
+
+		if (animPlayer != null && animPlayer.HasAnimation(AttackAnim))
 		{
-			Vector3 dir = GlobalPosition.DirectionTo(player.GlobalPosition);
-			player.Call("comboattack", Damage, dir);
+			animPlayer.SpeedScale = AttackAnimSpeed;
+			animPlayer.Play(AttackAnim, 0.1); // плавний перехід, завжди з початку
+			animPlayer.Seek(0.0, true);
 		}
 	}
 
-	public bool TargetInRange()
+	private void UpdateAttack(float delta)
 	{
-		if (player == null) return false;
-		return GlobalPosition.DistanceTo(player.GlobalPosition) <= AttackRange;
+		attackElapsed += delta;
+
+		// Момент удару
+		if (!hitDone && attackElapsed >= attackLength * HitMoment)
+		{
+			hitDone = true;
+
+			if (TargetInRange(AttackRange + 0.7f))
+			{
+				player.TakeDamage(Damage);
+				GD.Print("Мутант вдарив гравця!");
+			}
+		}
+
+		// Кінець анімації
+		if (attackElapsed >= attackLength)
+		{
+			isAttacking = false;
+			cooldownTimer = AttackCooldown;
+
+			if (animPlayer != null)
+				animPlayer.SpeedScale = 1.0f;
+		}
+	}
+
+	// Програє анімацію в циклі, не перезапускаючи її щокадру
+	private void PlayLoop(string name)
+	{
+		if (animPlayer == null || !animPlayer.HasAnimation(name))
+			return;
+
+		animPlayer.SpeedScale = 1.0f;
+
+		if (!animPlayer.IsPlaying() || animPlayer.CurrentAnimation != name)
+			animPlayer.Play(name, 0.15);
+	}
+
+	public bool TargetInRange(float range)
+	{
+		if (player == null)
+			return false;
+
+		Vector3 a = GlobalPosition;
+		Vector3 b = player.GlobalPosition;
+
+		return new Vector2(a.X, a.Z).DistanceTo(new Vector2(b.X, b.Z)) <= range;
 	}
 
 	private void SafeLookAt(Vector3 targetPosition)
 	{
 		Vector3 lookTarget = new Vector3(targetPosition.X, GlobalPosition.Y, targetPosition.Z);
+
 		if (!GlobalPosition.IsEqualApprox(lookTarget))
 		{
 			LookAt(lookTarget, Vector3.Up);

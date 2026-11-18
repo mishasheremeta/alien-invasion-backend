@@ -1,10 +1,8 @@
 [gd_scene format=4 uid="uid://cpng81ste871t"]
 
 [ext_resource type="Script" uid="uid://eh3su5cjrype" path="res://skript/Mutant.cs" id="1_cyrcq"]
-[ext_resource type="Texture2D" uid="uid://c0s82i6adqtp1" path="res://models/mutant/mutant_Mutant_diffuse.png" id="2_kufw8"]
-[ext_resource type="Texture2D" uid="uid://d2paply0skk81" path="res://models/mutant/mutant_Mutant_normal.png" id="3_vaefk"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mj2ab"]
+[ext_resource type="Texture2D" uid="uid://c0s82i6adqtp1" path="res://texture/Mutant/mutant_Mutant_diffuse.png" id="2_kufw8"]
+[ext_resource type="Texture2D" uid="uid://d2paply0skk81" path="res://texture/Mutant/mutant_Mutant_normal.png" id="3_vaefk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7s2ok"]
 resource_name = "mutant_M"
@@ -149,6 +147,8 @@ bind/35/pose = Transform3D(41.126213, -7.0251412, 90.88058, -88.8525, -25.34175,
 bind/36/name = &"mixamorig_RightHandThumb4"
 bind/36/bone = -1
 bind/36/pose = Transform3D(41.12621, -7.0251503, 90.88058, -88.8525, -25.341751, 38.249496, 20.343647, -96.480255, -16.664127, 35.810665, -64.9153, 153.06119)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mj2ab"]
 
 [sub_resource type="Animation" id="Animation_k4dft"]
 resource_name = "combo attack"
@@ -2423,10 +2423,18 @@ states/walking/position = Vector2(386.8, 149.6)
 transitions = ["Start", "walking", SubResource("AnimationNodeStateMachineTransition_o31xk"), "walking", "run", SubResource("AnimationNodeStateMachineTransition_icjgd"), "run", "shock", SubResource("AnimationNodeStateMachineTransition_63t3l"), "walking", "death", SubResource("AnimationNodeStateMachineTransition_clwvx"), "run", "death", SubResource("AnimationNodeStateMachineTransition_fgjdp"), "shock", "death", SubResource("AnimationNodeStateMachineTransition_e2u2g"), "run", "combo attack", SubResource("AnimationNodeStateMachineTransition_3b5tf"), "combo attack", "run", SubResource("AnimationNodeStateMachineTransition_u74f1"), "shock", "run", SubResource("AnimationNodeStateMachineTransition_vavxy")]
 
 [node name="mutant" type="CharacterBody3D" unique_id=1816213977]
+collision_layer = 4
+collision_mask = 5
 script = ExtResource("1_cyrcq")
 
+[node name="MutantMesh" type="MeshInstance3D" parent="." unique_id=1018362988]
+transform = Transform3D(0.012, 0, 0, 0, -5.2453664e-10, -0.012, 0, 0.012, -5.2453664e-10, 0, -0.0702014, 0)
+mesh = SubResource("ArrayMesh_xnj3d")
+skin = SubResource("Skin_pd1fb")
+skeleton = NodePath("../combo attack/Skeleton3D")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1394762497]
-transform = Transform3D(0.99971956, 0, 0.023678008, 0, 1, 0, -0.023678008, 0, 0.99971956, 0.010561295, 0.87139773, 1.9129615)
+transform = Transform3D(0.9997196, 0, 0.023678012, 0, 1, 0, -0.023678012, 0, 0.9997196, 0.010561295, 0.87139773, 2.0027747)
 shape = SubResource("CapsuleShape3D_mj2ab")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1930876231]
@@ -2695,11 +2703,6 @@ bones/36/enabled = true
 bones/36/position = Vector3(7.8201294e-05, 8.025278, -1.692772e-05)
 bones/36/rotation = Quaternion(9.313227e-09, -4.2840846e-08, 3.6787245e-08, 1)
 bones/36/scale = Vector3(0.99999994, 0.99999994, 0.9999999)
-
-[node name="MutantMesh" type="MeshInstance3D" parent="combo attack/Skeleton3D" unique_id=1018362988]
-mesh = SubResource("ArrayMesh_xnj3d")
-skin = SubResource("Skin_pd1fb")
-skeleton = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=152679595]
 libraries/ = SubResource("AnimationLibrary_52e55")

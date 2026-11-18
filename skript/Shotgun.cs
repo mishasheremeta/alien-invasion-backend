@@ -20,7 +20,7 @@ public partial class Shotgun : Node3D
 	[Export] public float FireCooldown { get; set; } = 0.8f;
 	[Export] public float ReloadShellTime { get; set; } = 0.65f;
 	[Export(PropertyHint.Layers3DPhysics)]
-	public uint CollisionMask { get; set; } = 1;
+	public uint CollisionMask { get; set; } = 5;
 
 	[ExportGroup("Віддача")]
 	[Export] public float RecoilDistance { get; set; } = 0.12f;
