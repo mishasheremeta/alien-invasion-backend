@@ -4,15 +4,15 @@ using System.Collections.Generic;
 public partial class WaveSpawner : Node3D
 {
 	[Export] public PackedScene MutantScene;
-	[Export] public int TotalWaves = 4;          // всього хвиль
-	[Export] public int FirstWaveCount = 3;      // мутантів у 1-й хвилі
-	[Export] public int ExtraPerWave = 2;        // +скільки з кожною хвилею
-	[Export] public int MaxAlive = 10;           // максимум одночасно
-	[Export] public float SpawnInterval = 1.0f;  // пауза між появами
+	[Export] public int TotalWaves = 4;
+	[Export] public int FirstWaveCount = 3;
+	[Export] public int ExtraPerWave = 2;
+	[Export] public int MaxAlive = 10;
+	[Export] public float SpawnInterval = 1.0f;
 	[Export] public float FirstWaveDelay = 3.0f;
 	[Export] public float TimeBetweenWaves = 5.0f;
 	[Export] public float HpGrowthPerWave = 0.15f;
-	[Export] public float RandomRadius = 8.0f;   // якщо немає Marker3D
+	[Export] public float RandomRadius = 8.0f;
 
 	private readonly List<Marker3D> _points = new();
 	private Label _label;
@@ -75,7 +75,6 @@ public partial class WaveSpawner : Node3D
 				await Wait(SpawnInterval);
 			}
 
-			// чекаємо, поки всіх уб'ють
 			while (IsInstanceValid(this) && _alive > 0 && !PlayerDead())
 				await Wait(0.5f);
 
@@ -94,14 +93,19 @@ public partial class WaveSpawner : Node3D
 
 	private void SpawnMutant()
 	{
-		var mutant = MutantScene.Instantiate<Mutant>();
-		GetTree().CurrentScene.AddChild(mutant);
+		var node = MutantScene.Instantiate<Node3D>();
+		GetTree().CurrentScene.AddChild(node);
+		node.GlobalPosition = GetSpawnPosition();
 
-		mutant.GlobalPosition = GetSpawnPosition();
-		mutant.hp *= 1.0f + HpGrowthPerWave * (_wave - 1);
+		if (node is Mutant mutant)
+			mutant.hp *= 1.0f + HpGrowthPerWave * (_wave - 1);
+		else
+			GD.PrintErr("У корені mutant.tscn немає скрипта Mutant.cs!");
+
+		GD.Print("Мутант створений у ", node.GlobalPosition);
 
 		_alive++;
-		mutant.TreeExited += () =>
+		node.TreeExited += () =>
 		{
 			if (IsInstanceValid(this))
 				_alive--;
@@ -123,7 +127,6 @@ public partial class WaveSpawner : Node3D
 			pos = GlobalPosition + new Vector3(Mathf.Cos(angle) * dist, 0, Mathf.Sin(angle) * dist);
 		}
 
-		// маленький розкид, щоб мутанти не з'являлися в одній точці
 		pos += new Vector3(GD.Randf() * 2f - 1f, 0.2f, GD.Randf() * 2f - 1f);
 		return pos;
 	}

@@ -37,6 +37,9 @@ public partial class Player : CharacterBody3D
 	private float _health;
 	private bool _isDead = false;
 
+	private ProgressBar _healthBar;
+	private Label _healthLabel;
+
 	public float Health => _health;
 	public bool IsDead => _isDead;
 
@@ -56,7 +59,10 @@ public partial class Player : CharacterBody3D
 	// ==========================================
 	public override void _Ready()
 	{
+		AddToGroup("player");
+
 		_health = MaxHealth;
+		CreateHealthUI();
 
 		_camera = GetNode<Camera3D>("Camera3D");
 		_baseCamPos = _camera.Position;
@@ -79,6 +85,56 @@ public partial class Player : CharacterBody3D
 		if (_jumpSound == null) GD.PrintErr("Звук стрибка не завантажено");
 
 		GD.Print("Здоров'я гравця: ", _health);
+	}
+
+	// ==========================================
+	// ІНТЕРФЕЙС ЗДОРОВ'Я
+	// ==========================================
+	private void CreateHealthUI()
+	{
+		var layer = new CanvasLayer { Layer = 70 };
+		AddChild(layer);
+
+		_healthBar = new ProgressBar
+		{
+			MinValue = 0,
+			MaxValue = MaxHealth,
+			Value = _health,
+			ShowPercentage = false,
+			CustomMinimumSize = new Vector2(300, 28),
+			MouseFilter = Control.MouseFilterEnum.Ignore
+		};
+		_healthBar.SetAnchorsPreset(Control.LayoutPreset.BottomLeft);
+		_healthBar.OffsetLeft = 50;
+		_healthBar.OffsetTop = -110;
+		_healthBar.OffsetRight = 330;
+		_healthBar.OffsetBottom = -32;
+
+		var fill = new StyleBoxFlat { BgColor = new Color(0.8f, 0.1f, 0.1f) };
+		var bg = new StyleBoxFlat { BgColor = new Color(0.1f, 0.1f, 0.1f, 0.7f) };
+		_healthBar.AddThemeStyleboxOverride("fill", fill);
+		_healthBar.AddThemeStyleboxOverride("background", bg);
+		layer.AddChild(_healthBar);
+
+		_healthLabel = new Label
+		{
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			MouseFilter = Control.MouseFilterEnum.Ignore
+		};
+		_healthLabel.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+		_healthBar.AddChild(_healthLabel);
+
+		UpdateHealthUI();
+	}
+
+	private void UpdateHealthUI()
+	{
+		if (_healthBar == null) return;
+
+		_healthBar.MaxValue = MaxHealth;
+		_healthBar.Value = _health;
+		_healthLabel.Text = $"{Mathf.CeilToInt(_health)} / {Mathf.CeilToInt(MaxHealth)}";
 	}
 
 	// ==========================================
@@ -255,12 +311,36 @@ public partial class Player : CharacterBody3D
 
 		_health -= damage;
 		_health = Mathf.Max(_health, 0);
+		UpdateHealthUI();
 
 		GD.Print("Гравець отримав урон: ", damage);
 		GD.Print("Здоров'я: ", _health, "/", MaxHealth);
 
 		if (_health <= 0)
 			Die();
+		else
+			ShowHitFlash();
+	}
+
+	// ==========================================
+	// ЧЕРВОНИЙ СПАЛАХ ПРИ УДАРІ
+	// ==========================================
+	private void ShowHitFlash()
+	{
+		var layer = new CanvasLayer { Layer = 90 };
+		AddChild(layer);
+
+		var flash = new ColorRect
+		{
+			Color = new Color(0.8f, 0f, 0f, 0.35f),
+			MouseFilter = Control.MouseFilterEnum.Ignore
+		};
+		flash.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+		layer.AddChild(flash);
+
+		var tween = CreateTween();
+		tween.TweenProperty(flash, "color:a", 0.0f, 0.35f);
+		tween.TweenCallback(Callable.From(() => layer.QueueFree()));
 	}
 
 	// ==========================================
@@ -272,6 +352,7 @@ public partial class Player : CharacterBody3D
 			return;
 
 		_health = Mathf.Min(_health + amount, MaxHealth);
+		UpdateHealthUI();
 
 		GD.Print("Здоров'я відновлено: ", _health);
 	}

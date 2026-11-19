@@ -1,0 +1,183 @@
+[gd_scene format=3 uid="uid://4w5701pvu1uf"]
+
+[ext_resource type="Script" uid="uid://cuq3mkfet682w" path="res://skript/Menu.cs" id="1_1pk3a"]
+[ext_resource type="Texture2D" uid="uid://uhdm32hwq7t2" path="res://for menu/photo/menu photo.jpg" id="1_dqtp5"]
+[ext_resource type="FontFile" uid="uid://dpgm04ojk6goe" path="res://for menu/fonts/a-friend-in-deed.ttf" id="2_dqtp5"]
+[ext_resource type="AudioStream" uid="uid://1optal33q2nr" path="res://for menu/menu music/alien invasion(threme)(full).mp3" id="4_1pk3a"]
+
+[node name="Menu" type="Control" unique_id=822750804]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -192.0
+offset_bottom = -192.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_1pk3a")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=265911264]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -960.0
+offset_top = -348.0
+offset_right = 960.0
+offset_bottom = 732.0
+grow_vertical = 2
+texture = ExtResource("1_dqtp5")
+
+[node name="Label" type="Label" parent="." unique_id=1518642064]
+modulate = Color(0.12156863, 0.5372549, 0.36078432, 1)
+self_modulate = Color(2.055, 2.055, 2.055, 1)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -279.0
+offset_top = -187.0
+offset_right = 233.0
+offset_bottom = -92.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 100
+text = "ALIEN INVASION"
+
+[node name="Button" type="Button" parent="." unique_id=1863196806]
+modulate = Color(0.12156863, 0.5372549, 0.36078432, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -105.5
+offset_top = 314.5
+offset_right = 105.5
+offset_bottom = 407.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 89
+text = "Start
+"
+alignment = 2
+
+[node name="Button2" type="Button" parent="." unique_id=35323572]
+modulate = Color(0.12156863, 0.5372549, 0.36078432, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -152.0
+offset_top = 426.5
+offset_right = 152.0
+offset_bottom = 519.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 89
+text = "Settings
+
+"
+alignment = 2
+
+[node name="Button3" type="Button" parent="." unique_id=1233285913]
+modulate = Color(0.12156863, 0.5372549, 0.36078432, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -73.75
+offset_top = 541.5
+offset_right = 73.75
+offset_bottom = 634.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 89
+text = "quit
+"
+alignment = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=30905801]
+stream = ExtResource("4_1pk3a")
+autoplay = true
+
+[node name="Panel" type="Panel" parent="." unique_id=1102397663]
+modulate = Color(0.14359838, 0.6260688, 0.42234364, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = 269.0
+offset_right = 220.0
+offset_bottom = 677.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel" unique_id=1429552057]
+modulate = Color(0.8039216, 0.88235295, 0.88235295, 1)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 96.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 100
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="Button3" type="Button" parent="Panel/Label" unique_id=982134036]
+modulate = Color(0.8039216, 0.88235295, 0.88235295, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.875
+offset_top = 261.5
+offset_right = 83.875
+offset_bottom = 354.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.36862746, 0.69411767, 0.54509807, 1)
+theme_override_fonts/font = ExtResource("2_dqtp5")
+theme_override_font_sizes/font_size = 89
+text = "back
+
+
+"
+alignment = 2
+
+[connection signal="pressed" from="Button" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_setting_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Panel/Label/Button3" to="." method="_on_back_pressed"]

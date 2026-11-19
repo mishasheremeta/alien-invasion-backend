@@ -1,12 +1,10 @@
-
 using Godot;
 
 public partial class Shotgun : Node3D
 {
-	[ExportGroup("Посилання")]
-	[Export] public NodePath CameraPath { get; set; } = new NodePath("..");
-	[Export] public NodePath AmmoLabelPath { get; set; } =
-		new NodePath("../../CanvasLayer/AmmoLabel");
+	[ExportGroup("Шляхи")]
+	[Export] public NodePath CameraPath { get; set; } = "..";
+	[Export] public NodePath AmmoLabelPath { get; set; }
 
 	[ExportGroup("Боєприпаси")]
 	[Export] public int MagazineCapacity { get; set; } = 8;
@@ -51,13 +49,12 @@ public partial class Shotgun : Node3D
 
 		if (_camera == null)
 		{
-			GD.PushError(
-                "Shotgun: не знайдено Camera3D. Перевір CameraPath."
-			);
+			GD.PushError("Shotgun: не знайдено Camera3D. Перевір CameraPath.");
 			SetProcess(false);
 			SetProcessInput(false);
 			return;
 		}
+
 		if (WeaponScene != null)
 		{
 			_weaponModel = WeaponScene.Instantiate<Node3D>();
@@ -68,11 +65,15 @@ public partial class Shotgun : Node3D
 			GD.PrintErr("Shotgun: Не вказано WeaponScene у інспекторі!");
 		}
 
-		_ammoLabel = GetNodeOrNull<Label>(AmmoLabelPath);
+		// Індикатор: свій Label, якщо вказаний, інакше створюємо сами
+		if (AmmoLabelPath != null && !AmmoLabelPath.IsEmpty)
+			_ammoLabel = GetNodeOrNull<Label>(AmmoLabelPath);
 
-		// Знаходимо Player серед батьківських вузлів.
+		if (_ammoLabel == null)
+			CreateAmmoUI();
+
+		// Знаходимо Player серед батьківських вузлів
 		Node current = GetParent();
-
 		while (current != null)
 		{
 			if (current is CharacterBody3D body)
@@ -80,7 +81,6 @@ public partial class Shotgun : Node3D
 				_player = body;
 				break;
 			}
-
 			current = current.GetParent();
 		}
 
@@ -93,21 +93,40 @@ public partial class Shotgun : Node3D
 		UpdateAmmoUI();
 	}
 
+	private void CreateAmmoUI()
+	{
+		var layer = new CanvasLayer { Layer = 70 };
+		AddChild(layer);
+
+		_ammoLabel = new Label
+		{
+			HorizontalAlignment = HorizontalAlignment.Right,
+			VerticalAlignment = VerticalAlignment.Center,
+			MouseFilter = Control.MouseFilterEnum.Ignore
+		};
+		_ammoLabel.AddThemeFontSizeOverride("font_size", 36);
+		_ammoLabel.AddThemeColorOverride("font_outline_color", Colors.Black);
+		_ammoLabel.AddThemeConstantOverride("outline_size", 6);
+		_ammoLabel.SetAnchorsPreset(Control.LayoutPreset.BottomRight);
+		_ammoLabel.OffsetLeft = -520;
+		_ammoLabel.OffsetTop = -130;
+		_ammoLabel.OffsetRight = -70;
+		_ammoLabel.OffsetBottom = -30;
+		layer.AddChild(_ammoLabel);
+	}
+
 	public override void _Input(InputEvent @event)
 	{
 		if (_camera == null)
 			return;
 
-		// Ліва кнопка миші — постріл.
 		if (@event is InputEventMouseButton mouseEvent
 			&& mouseEvent.ButtonIndex == MouseButton.Left
-			&& mouseEvent.Pressed
-			)
+			&& mouseEvent.Pressed)
 		{
 			Shoot();
 		}
 
-		// R — перезаряджання.
 		if (@event is InputEventKey keyEvent
 			&& keyEvent.Pressed
 			&& !keyEvent.Echo
@@ -124,37 +143,31 @@ public partial class Shotgun : Node3D
 		if (_fireTimer > 0.0f)
 			_fireTimer -= dt;
 
-		// Поступове перезаряджання по одному патрону.
 		if (_isReloading)
 		{
 			_reloadTimer -= dt;
 
 			if (_reloadTimer <= 0.0f)
-			{
 				LoadOneShell();
-			}
 		}
 
-		// Повернення моделі після віддачі.
 		_recoilAmount = Mathf.Lerp(
 			_recoilAmount,
 			0.0f,
 			Mathf.Clamp(RecoilRecoverySpeed * dt, 0.0f, 1.0f)
 		);
 
-		Position = _basePosition
-			+ new Vector3(0.0f, 0.0f, _recoilAmount);
+		Position = _basePosition + new Vector3(0.0f, 0.0f, _recoilAmount);
 
 		UpdateAmmoUI();
 	}
 
 	private void Shoot()
 	{
-		
 		if (_fireTimer > 0.0f)
 			return;
 
-		// Постріл може перервати перезаряджання.
+		// Постріл може перервати перезаряджання
 		if (_isReloading)
 		{
 			_isReloading = false;
@@ -167,7 +180,8 @@ public partial class Shotgun : Node3D
 				StartReload();
 			else
 				GD.Print("Немає патронів!");
-_recoilAmount = Mathf.Abs(RecoilDistance);
+
+			_recoilAmount = Mathf.Abs(RecoilDistance);
 			return;
 		}
 
@@ -175,9 +189,7 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 		_fireTimer = Mathf.Max(0.05f, FireCooldown);
 		_recoilAmount = -Mathf.Abs(RecoilDistance);
 
-		// Центр екрана.
-		Vector2 screenCenter =
-			GetViewport().GetVisibleRect().Size / 2.0f;
+		Vector2 screenCenter = GetViewport().GetVisibleRect().Size / 2.0f;
 
 		Vector3 origin = _camera.ProjectRayOrigin(screenCenter);
 		Vector3 forward = _camera.ProjectRayNormal(screenCenter);
@@ -185,7 +197,6 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 		Vector3 right = _camera.GlobalBasis.X;
 		Vector3 up = _camera.GlobalBasis.Y;
 
-		// Один постріл дробовика — декілька променів.
 		int pelletCount = Mathf.Max(1, PelletsPerShot);
 
 		for (int i = 0; i < pelletCount; i++)
@@ -193,21 +204,15 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 			float spreadX = _rng.RandfRange(-Spread, Spread);
 			float spreadY = _rng.RandfRange(-Spread, Spread);
 
-			Vector3 direction = (
-				forward + right * spreadX + up * spreadY
-			).Normalized();
+			Vector3 direction = (forward + right * spreadX + up * spreadY).Normalized();
 
 			FirePellet(origin, direction);
 		}
 
-		GD.Print(
-			$"Дробовик: {_ammoInMagazine}/{_reserveAmmo}"
-		);
+		GD.Print($"Дробовик: {_ammoInMagazine}/{_reserveAmmo}");
 
 		UpdateAmmoUI();
 
-		// Автоматично починаємо перезаряджання,
-		// якщо магазин спорожнів.
 		if (_ammoInMagazine == 0 && _reserveAmmo > 0)
 			StartReload();
 	}
@@ -216,21 +221,14 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 	{
 		Vector3 end = origin + direction * Range;
 
-		var query = PhysicsRayQueryParameters3D.Create(
-			origin,
-			end
-		);
+		var query = PhysicsRayQueryParameters3D.Create(origin, end);
 
 		query.CollisionMask = CollisionMask;
 		query.CollideWithBodies = true;
 		query.CollideWithAreas = true;
 
-		// Не дозволяємо променю влучити в самого гравця.
 		if (_player != null)
-			query.Exclude = new Godot.Collections.Array<Rid>
-			{
-				_player.GetRid()
-			};
+			query.Exclude = new Godot.Collections.Array<Rid> { _player.GetRid() };
 
 		var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
 
@@ -240,14 +238,11 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 		if (!hit.TryGetValue("collider", out Variant colliderValue))
 			return;
 
-		GodotObject hitObject = colliderValue.AsGodotObject();
-		Node hitNode = hitObject as Node;
+		Node hitNode = colliderValue.AsGodotObject() as Node;
 
 		if (hitNode == null)
 			return;
 
-		// Шукаємо вузол з методом TakeDamage,
-		// навіть якщо влучили в дочірню колізію мутанта.
 		Node target = hitNode;
 
 		while (target != null)
@@ -298,7 +293,6 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 
 		UpdateAmmoUI();
 
-		// Якщо магазин ще не повний — заряджаємо наступний.
 		if (_ammoInMagazine < MagazineCapacity && _reserveAmmo > 0)
 		{
 			_reloadTimer = Mathf.Max(0.05f, ReloadShellTime);
@@ -316,13 +310,20 @@ _recoilAmount = Mathf.Abs(RecoilDistance);
 		if (_ammoLabel == null)
 			return;
 
-		string status = _isReloading ? " (перезаряджання)" : "";
+		string status = _isReloading ? "  (перезаряджання)" : "";
 
-		_ammoLabel.Text =
-			$"ДРОБОВИК  {_ammoInMagazine}/{_reserveAmmo}{status}";
+		_ammoLabel.Text = $"ДРОБОВИК  {_ammoInMagazine} / {_reserveAmmo}{status}";
+
+		if (_ammoInMagazine <= 0 && _reserveAmmo <= 0)
+			_ammoLabel.Modulate = new Color(1f, 0.25f, 0.25f);   // патронів немає зовсім
+		else if (_isReloading)
+			_ammoLabel.Modulate = new Color(1f, 0.85f, 0.3f);    // перезарядка
+		else if (_ammoInMagazine <= 0)
+			_ammoLabel.Modulate = new Color(1f, 0.5f, 0.3f);     // магазин порожній
+		else
+			_ammoLabel.Modulate = Colors.White;
 	}
 
-	// Можна викликати з іншого скрипта, щоб додати патрони.
 	public void AddReserveAmmo(int amount)
 	{
 		if (amount <= 0)

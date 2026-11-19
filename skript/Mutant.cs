@@ -3,21 +3,21 @@ using Godot;
 public partial class Mutant : CharacterBody3D
 {
 	[Export] public NodePath PlayerPath { get; set; }
-	[Export] public float AttackRange { get; set; } = 1.5f;
-	[Export] public float Damage { get; set; } = 10.0f;
-	[Export] public float AttackCooldown { get; set; } = 0.8f;   // пауза між ударами
+	[Export] public float AttackRange { get; set; } = 2.5f;
+	[Export] public float Damage { get; set; } = 20.0f;
+	[Export] public float AttackCooldown { get; set; } = 0.8f;
 	[Export(PropertyHint.Range, "0,1,0.05")]
-	public float HitMoment { get; set; } = 0.45f;                // у який момент анімації шкода (0..1)
+	public float HitMoment { get; set; } = 0.45f;
 	[Export] public float AttackAnimSpeed { get; set; } = 1.0f;
 
 	private const string AttackAnim = "combo attack";
 	private const string RunAnim = "run";
-	private const string IdleAnim = "idle"; // якщо такої немає, мутант просто завмре
+	private const string IdleAnim = "idle";
+
+	public float hp = 40.0f;
+	private const float Speed = 4.0f;
 
 	private Player player = null;
-	public float hp = 15.0f;
-
-	private const float Speed = 4.0f;
 
 	private float cooldownTimer = 0.0f;
 	private bool isAttacking = false;
@@ -36,7 +36,6 @@ public partial class Mutant : CharacterBody3D
 		if (animPlayer == null)
 			animPlayer = GetNodeOrNull<AnimationPlayer>("combo attack/Skeleton3D/AnimationPlayer");
 
-		// AnimationTree не повинен перебивати AnimationPlayer
 		var tree = GetNodeOrNull<AnimationTree>("AnimationTree");
 		if (tree != null)
 			tree.Active = false;
@@ -46,7 +45,7 @@ public partial class Mutant : CharacterBody3D
 			SetupAnimation(RunAnim, true);
 			SetupAnimation("walking", true);
 			SetupAnimation(IdleAnim, true);
-			SetupAnimation(AttackAnim, false); // удар НЕ зациклений
+			SetupAnimation(AttackAnim, false);
 
 			if (animPlayer.HasAnimation(AttackAnim))
 				attackLength = (float)animPlayer.GetAnimation(AttackAnim).Length / AttackAnimSpeed;
@@ -119,17 +118,25 @@ public partial class Mutant : CharacterBody3D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (player == null || !GodotObject.IsInstanceValid(player))
-		{
-			FindPlayer();
-			if (player == null) return;
-		}
-
 		float fDelta = (float)delta;
 		Vector3 vel = Velocity;
 
+		// Гравітація працює завжди, навіть якщо гравця немає
 		if (!IsOnFloor())
 			vel += GetGravity() * fDelta;
+
+		if (player == null || !GodotObject.IsInstanceValid(player))
+		{
+			FindPlayer();
+			if (player == null)
+			{
+				vel.X = 0;
+				vel.Z = 0;
+				Velocity = vel;
+				MoveAndSlide();
+				return;
+			}
+		}
 
 		// Гравець мертвий: зупиняємось
 		if (player.IsDead)
@@ -150,7 +157,6 @@ public partial class Mutant : CharacterBody3D
 
 		if (isAttacking || inRange)
 		{
-			// Під час атаки стоїмо на місці
 			vel.X = 0;
 			vel.Z = 0;
 
@@ -160,7 +166,7 @@ public partial class Mutant : CharacterBody3D
 			if (isAttacking)
 				UpdateAttack(fDelta);
 			else
-				PlayLoop(IdleAnim); // чекаємо кулдаун
+				PlayLoop(IdleAnim);
 		}
 		else
 		{
@@ -188,9 +194,6 @@ public partial class Mutant : CharacterBody3D
 		MoveAndSlide();
 	}
 
-	// ==========================================
-	// АТАКА
-	// ==========================================
 	private void StartAttack()
 	{
 		isAttacking = true;
@@ -200,7 +203,7 @@ public partial class Mutant : CharacterBody3D
 		if (animPlayer != null && animPlayer.HasAnimation(AttackAnim))
 		{
 			animPlayer.SpeedScale = AttackAnimSpeed;
-			animPlayer.Play(AttackAnim, 0.1); // плавний перехід, завжди з початку
+			animPlayer.Play(AttackAnim, 0.1);
 			animPlayer.Seek(0.0, true);
 		}
 	}
@@ -209,7 +212,6 @@ public partial class Mutant : CharacterBody3D
 	{
 		attackElapsed += delta;
 
-		// Момент удару
 		if (!hitDone && attackElapsed >= attackLength * HitMoment)
 		{
 			hitDone = true;
@@ -221,7 +223,6 @@ public partial class Mutant : CharacterBody3D
 			}
 		}
 
-		// Кінець анімації
 		if (attackElapsed >= attackLength)
 		{
 			isAttacking = false;
@@ -232,7 +233,6 @@ public partial class Mutant : CharacterBody3D
 		}
 	}
 
-	// Програє анімацію в циклі, не перезапускаючи її щокадру
 	private void PlayLoop(string name)
 	{
 		if (animPlayer == null || !animPlayer.HasAnimation(name))
